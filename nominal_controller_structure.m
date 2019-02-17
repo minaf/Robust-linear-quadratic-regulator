@@ -1,20 +1,5 @@
-classdef controller_structure
-    %state-space form of inverted pendulum
-    properties
-        T1
-        T2
-        W
-        Z
-        X
-    end
+classdef nominal_controller_structure < controller_structure
     methods
-        function obj = controller_structure(T1, T2, W, Z, X)
-            obj.T1 = T1;
-            obj.T2 = T2;
-            obj.W = W;
-            obj.Z = Z;
-            obj.X = X;
-        end
         function con = get_nominal_controller(obj, system_real, Tf)
             % designed using initial uncertainty
             [Nx Nu] = get_state_size(system_real);

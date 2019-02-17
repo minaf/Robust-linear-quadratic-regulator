@@ -38,5 +38,25 @@ classdef controller_structure
             con = controller_ss(K0, Wnom, cost_old, cost_new, obj.T2(tmp(1)-Nx-Nu+1:end, tmp(2)-Nx-Nu+1:end));    
         end
         
+        function con = get_dual_controller(obj, system_real, Tf1, Tf)
+            % designed using initial uncertainty
+            tau = sdpvar(1);
+            Qcl = model_app.Qcl;
+            Rcl = model_app.Rcl;
+            
+            C = [Qcl*obj.W; Rcl*obj.Z'];
+            S = [obj.X C; C' obj.W]; %the cost
+            Objective = trace(obj.X);
+            Constraints = [obj.T1-tau*obj.T2>=0, obj.W>=0,S>=0, tau>=0];
+            ops = sdpsettings('solver','mosek','verbose',0);
+            sol = optimize(Constraints,Objective, ops);
+            
+            K0 = double(obj.Z)'/(double(obj.W));
+            cost_old = double(Objective);
+            Wnom = double(obj.W);
+            cost_new = calculate_cost(K0, system_real, Tf);
+            
+            con = controller_ss(K0, Wnom, cost_old, cost_new, D0);    
+        end
     end
 end

@@ -19,5 +19,20 @@ classdef system_ss
             Nx = size(obj.A,1);
             Nu = size(obj.B,2);
         end
+        function cost = calculate_cost(Ksim, obj, Tf)
+            A = obj.A;
+            B = obj.B;
+            [Nx, Nu] = get_state_size(obj);
+            W = obj.sigma_w*randn(Nx,Tf);
+            xs = zeros(Nx,Tf);
+            us = zeros(Nu,Tf);
+            c = 0;
+            for t = 1:Tf
+                us(:,t) = Ksim*xs(:,t);
+                xs(:,t+1) = A*xs(:,t) + B*us(:,t) + W(:,t);
+                c = c + xs(:,t)'*obj.Qcl'*obj.Qcl*xs(:,t) + us(:,t)'*obj.Rcl'*obj.Rcl*us(:,t);
+            end
+            cost = c/Tf;
+        end
     end
 end

@@ -35,18 +35,13 @@ const = 1/(sigma_w*(sqrt(Nx+Nu)+sqrt(Nx)+sqrt(2*log(1/0.95))))^2;
 
 %% calculate nominal controller
 yalmip('clear');
-Tf = 1e3; %for calculatinf cost
-
-%decision variables
+Tf = 1e3;
 W = sdpvar(Nx,Nx);    
 Z = sdpvar(Nx,Nu,'full');    
 X = sdpvar(Nx+Nu,Nx+Nu);    
 
-%using already estimated parameters
 Ab = inv_pend_model.A;
 Bb = inv_pend_model.B;
-
-%define matrices in the same way as Luo 2005
 I = eye(Nx);
 H = blkdiag(W, I);
 F = [W*Ab'+Z*Bb'; sigma_w*I];
@@ -58,23 +53,14 @@ T1(2*Nx+1:end, 1:2*Nx) = [F'; G'];
 
 T2 = blkdiag(zeros(2*Nx, 2*Nx), I, -const*(inv_pend_model.D0)); % D = const*(Phi'*Phi)
 
-%define structure
-con_str = nominal_controller_structure(T1, T2, W, Z, X);
+con_str = controller_structure(T1, T2, W, Z, X);
 
-%calculate controller and its characteristics
 controller_nominal = get_nominal_controller(con_str, inv_pend, Tf)
 
 %% calculate dual controller
 yalmip('clear');
-
-Tf1 = 20; %for inside of controller optimization
-
-%D is decision variable as well in dual controller case
 D = sdpvar(Nx+Nu,Nx+Nu);  
-T3 = blkdiag(zeros(2*Nx, 2*Nx), I, -const*(inv_pend_model.D0 + Tf*D)); % D0 = const*(Phi'*Phi)
+T3 = blkdiag(zeros(2*Nx, 2*Nx), I, -const*(inv_pend_model.D0 + Tf*D)); % D = const*(Phi'*Phi)
+con_str = controller_structure(T1, T2, W, Z, X);
 
-%define structure for the optimization
-con_str = dual_controller_structure(T1, T2, W, Z, X);
-
-%calculate controller and its characteristics
-controller_dual = get_dual_controller(con_str, inv_pend, Tf1, Tf);
+controller_dual = get_dual_controller(con_str, inv_pend, Tf1, Tf)
