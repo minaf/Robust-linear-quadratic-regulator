@@ -1,10 +1,12 @@
-function res = max_cost_of_confidence_set(model, nominal_controller, N)
+function res = max_cost_of_confidence_set(model, nominal_controller, const, N)
 
 %sample some systems
 costs = zeros(N,1);
 D0 = model.D0;
 Ab0 = model.A;
 Bb0 = model.B;
+
+[Nx, Nu] = size(Bb0);
 
 for i = 1:N
     
@@ -23,8 +25,7 @@ for i = 1:N
     mod.A = Ab0 + X(1:Nx,:)';
     mod.B = Bb0 + X(Nx+1:end,:)';
 
-    cost = stochLQRcost(model, nominal_controller);
-    costs(i) = cost.cost;
+    costs(i) = stochLQRcost(model, nominal_controller);
     
 end
 res = max(costs);

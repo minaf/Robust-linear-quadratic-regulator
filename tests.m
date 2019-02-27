@@ -1,3 +1,4 @@
+main
 %% Test 1 
 %function get_model
 %check if this is unbiased estimator
@@ -33,7 +34,10 @@ assert(spectralRadius(A+B*controller_nominal.K) < 1)
 assert(controller_nominal.cost_old > controller_nominal.cost_new)
 
 %second: generate some random system 
+assert(max_cost_of_confidence_set(inv_pend_model, controller_nominal, const, 1000) < controller_nominal.cost_old)
 
+%% Test 5
+% dual controller
 
 
 
