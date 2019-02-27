@@ -15,12 +15,12 @@ classdef controller_structure
             obj.Z = Z;
             obj.X = X;
         end
-        function con = get_nominal_controller(obj, system_real, Tf)
+        function con = get_nominal_controller(obj, model_app, system_real, Tf)
             % designed using initial uncertainty
-            [Nx Nu] = get_state_size(system_real);
+
             tau = sdpvar(1);
-            Qcl = system_real.Qcl;
-            Rcl = system_real.Rcl;
+            Qcl = model_app.Qcl;
+            Rcl = model_app.Rcl;
             
             C = [Qcl*obj.W; Rcl*obj.Z'];
             S = [obj.X C; C' obj.W]; %the cost
@@ -34,9 +34,8 @@ classdef controller_structure
             Wnom = double(obj.W);
             cost_new = calculate_cost(K0, system_real, Tf);
             
-            tmp = size(obj.T2);
-            con = controller_ss(K0, Wnom, cost_old, cost_new, obj.T2(tmp(1)-Nx-Nu+1:end, tmp(2)-Nx-Nu+1:end));    
+            con = controller_ss(K0, Wnom, cost_old, cost_new);
+                
         end
-        
     end
 end
