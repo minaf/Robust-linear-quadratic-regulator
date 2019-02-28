@@ -1,6 +1,4 @@
-function res = s_dean_lqr_wc(ops)
-
-ops_sls = ops;
+function res = s_dean_lqr_wc(model, ea, eb)
 
 % Then fit a model
 % ops_sls.A = A_ls;
@@ -10,7 +8,7 @@ ops_sls = ops;
 % ops_sls.ea = res_bs.ea;
 % ops_sls.eb = res_bs.eb;
 
-[nx,nu] = size(ops.B);
+[nx,nu] = size(model.B);
 
 tstart = tic;
 
@@ -27,16 +25,16 @@ gs_iter = 1;
 while (abs(gsc-gsd) > 0.001) && (gs_iter <= max_gs_iters)
    
 % Compute at c  
-    ops_sls.gamma = gsc;
-    res_sls_c = sls_cl_lqr_sdp(ops_sls);
+    gamma = gsc;
+    res_sls_c = sls_cl_lqr_sdp(model, ea, eb, gamma);
     fc = res_sls_c.obj;
     
 % Compute at d 
     ops_sls.gamma = gsd;
-    res_sls_d = sls_cl_lqr_sdp(ops_sls);
+    res_sls_d = sls_cl_lqr_sdp(model, ea, eb, gamma);
     fd = res_sls_d.obj;   
     
-    fprintf('\tGS itr: %d, prob: %d, a: %.3f, b: %.3f, c: %.3f, d: %.3f, |gc-gd| = %.4f, Obj(c) = %.5e, Obj(d) = %.5e\n',gs_iter,res_sls_c.sol.problem,gsa,gsb,gsc,gsd,abs(gsc-gsd),fc,fd)
+   % fprintf('\tGS itr: %d, prob: %d, a: %.3f, b: %.3f, c: %.3f, d: %.3f, |gc-gd| = %.4f, Obj(c) = %.5e, Obj(d) = %.5e\n',gs_iter,res_sls_c.sol.problem,gsa,gsb,gsc,gsd,abs(gsc-gsd),fc,fd)
 
  
     if fc < fd
@@ -53,8 +51,6 @@ while (abs(gsc-gsd) > 0.001) && (gs_iter <= max_gs_iters)
 end
 
 comptime_wc= toc(tstart);
-
-fprintf('GS iters: %d, Obj (c) = %.5e, gamma(d) = %.3f\n',gs_iter,fc,ops_sls.gamma)
 
 % Note: changing as 17/5/18
 

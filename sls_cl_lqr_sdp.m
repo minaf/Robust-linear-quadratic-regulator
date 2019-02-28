@@ -1,14 +1,11 @@
-function res = sls_cl_lqr_sdp(ops)
+function res = sls_cl_lqr_sdp(model, ea, eb, gamma)
 
 tstart = tic;
 
-A = ops.A;
-B = ops.B;
-Q = ops.Q;
-R = ops.R;
-ea = ops.ea;
-eb = ops.eb;
-gamma = ops.gamma;
+A = model.A;
+B = model.B;
+Q = model.Qcl'*model.Qcl;
+R = model.Rcl'*model.Rcl;
 
 g2 = gamma^2;
 
@@ -37,10 +34,10 @@ constraints = [tmp1 >= 0, tmp2 >= 0];
 obj = (trace(Q*W11) + trace(R*W22))/(1-gamma)^2;
 
 
-ops = sdpsettings('solver','mosek');
-ops.verbose = 0;
+model = sdpsettings('solver','mosek');
+model.verbose = 0;
 
-sol = solvesdp(constraints,obj,ops);
+sol = solvesdp(constraints,obj,model);
 
 Z = double(Z);
 X = double(X);
