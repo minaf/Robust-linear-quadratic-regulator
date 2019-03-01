@@ -1,6 +1,7 @@
 classdef nominal_controller_structure < controller_structure
     methods
         function con = get_nominal_controller(obj, system_real, Tf)
+            Assert.isTrue(Tf>=0);
             % designed using initial uncertainty
             [Nx Nu] = get_state_size(system_real);
             tau = sdpvar(1);
