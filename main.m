@@ -57,3 +57,28 @@ con_str = controller_structure(T1, T2, W, Z, X);
 
 controller_nominal = get_nominal_controller(con_str, inv_pend_model, inv_pend, Tf);
 
+%% calculate dual controller
+yalmip('clear');
+Tf = 1e3;
+W = sdpvar(Nx,Nx);    
+Z = sdpvar(Nx,Nu,'full');    
+X = sdpvar(Nx+Nu,Nx+Nu);    
+
+Ab = inv_pend_model.A;
+Bb = inv_pend_model.B;
+I = eye(Nx);
+H = blkdiag(W, I);
+F = [W*Ab'+Z*Bb'; sigma_w*I];
+G = -[W Z; zeros(Nx, Nx+Nu)];
+
+T1 = blkdiag(H, W, zeros(Nx+Nu, Nx+Nu));
+T1(1:2*Nx, 2*Nx+1:end) = [F G];
+T1(2*Nx+1:end, 1:2*Nx) = [F'; G'];
+
+T2 = blkdiag(zeros(2*Nx, 2*Nx), I, -const*(inv_pend_model.D0)); % D = const*(Phi'*Phi)
+
+con_str = controller_structure(T1, T2, W, Z, X);
+
+controller_nominal = get_nominal_controller(con_str, inv_pend_model, inv_pend, Tf);
+
+

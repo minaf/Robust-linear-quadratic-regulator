@@ -83,9 +83,15 @@ cost_analytic = trace(S_opt*inv_pend_model.sigma_w^2*eye(Nx));
 %we are using approximate calculation
 assert(abs(cost_analytic-cost_opt) < 0.5)
 
+%% Test 8
+% Check max_cost_of_confidence_set (oracle test)
+%more precise model
+inv_pend_new = get_model(inv_pend, 100000, 5);
+cost = max_cost_of_confidence_set(inv_pend_new, controller_nominal, const, 10);
+cost_stochastic = stochLQRcost(inv_pend_new,controller_nominal);
 
 
-
+assert(abs(cost_stochastic-cost)<1);
 
 
 
