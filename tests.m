@@ -39,7 +39,6 @@ assert(max_cost_of_confidence_set(inv_pend_model, controller_nominal, const, 100
 %% Test 5
 % Check function s_dean_lqr_wc which calculates new controller from Dean
 % paper
-%initial uncertainty
 D0 = inv_pend_model.D0;
 %calculating spectral norms
 M = inv(D0)/const;
@@ -61,6 +60,30 @@ eb = sqrt(max(eig(M(Nx+1:end,Nx+1:end))));
 controller_sls = sls_cl_lqr_sdp(inv_pend_model, ea, eb, 0.2);
 %check if the controller is stabilizing the true system
 assert(spectralRadius(A+B*controller_sls.K) < 1)
+
+%% Test 7
+%Check stochastic LQR cost
+fprintf('Optimal control for true system:\n')
+[K_opt,S_opt] = dlqr(A,B,Q,R,zeros(Nx,Nu));
+
+K_opt = -K_opt; % we are calculating based on u = K_opt*x
+controller_opt.K = K_opt;
+
+cost_nom = stochLQRcost(inv_pend_model,controller_nominal);
+cost_opt = stochLQRcost(inv_pend_model,controller_opt)
+
+%check that the cost of the optimal controller is less than robust
+%controller
+assert(cost_opt <= cost_nom)
+
+%check that this function is giving the correct answer (oracle test)
+%explicit calculation of the cost
+cost_analytic = trace(S_opt*inv_pend_model.sigma_w^2*eye(Nx));
+
+%we are using approximate calculation
+assert(abs(cost_analytic-cost_opt) < 0.5)
+
+
 
 
 
