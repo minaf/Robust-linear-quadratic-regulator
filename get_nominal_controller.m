@@ -11,6 +11,8 @@ function con = get_nominal_controller(obj, model_app, system_real, Tf)
     Constraints = [obj.T1-tau*obj.T2>=0, obj.W>=0,S>=0, tau>=0];
     ops = sdpsettings('solver','mosek','verbose',0);
     sol = optimize(Constraints,Objective, ops);
+    
+    assert(sol.problem == 0);
 
     K0 = double(obj.Z)'/(double(obj.W));
     cost_old = double(Objective);
