@@ -1,11 +1,11 @@
-function res = stochLQRcost(model,nominal_controller)
+function res = stochLQRcost(model,controller)
 
 A = model.A;
 B = model.B;
 Q = model.Qcl'*model.Qcl;
 R = model.Rcl'*model.Rcl;
 W = model.sigma_w^2*eye(size(A, 1));
-K = nominal_controller.K;
+K = controller.K;
 
 
 ABK = A+B*K;
