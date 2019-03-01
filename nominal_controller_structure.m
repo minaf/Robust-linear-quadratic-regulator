@@ -1,7 +1,7 @@
 classdef nominal_controller_structure < controller_structure
     methods
         function con = get_nominal_controller(obj, system_real, Tf)
-            Assert.isTrue(Tf>=0);
+            assert(Tf>=0);
             % designed using initial uncertainty
             [Nx Nu] = get_state_size(system_real);
             tau = sdpvar(1);
@@ -15,7 +15,7 @@ classdef nominal_controller_structure < controller_structure
             ops = sdpsettings('solver','mosek','verbose',0);
             sol = optimize(Constraints,Objective, ops);
             
-            K0 = double(obj.Z)'/(double(obj.W));
+            K0 = double(obj.Z)'/(double(obj.W))
             cost_old = double(Objective);
             Wnom = double(obj.W);
             cost_new = calculate_cost(K0, system_real, Tf);

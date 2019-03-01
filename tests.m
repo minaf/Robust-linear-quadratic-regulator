@@ -12,7 +12,7 @@ tmp = get_model(inv_pend, 1000,5);
 tmp_unc2 = norm(tmp.D0, 2);
 tmp_cost2 = norm(tmp.A-A) + norm(tmp.B-B);
 
-%test if the srror is decaying as N is increasing 
+%test if the error is decaying as N is increasing 
 assert(tmp_cost1 > tmp_cost2)
 %test if norm is decreasing of the model uncertainty as N in increasing
 assert(tmp_unc1 < tmp_unc2)
