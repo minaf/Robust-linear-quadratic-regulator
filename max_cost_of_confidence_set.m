@@ -1,5 +1,7 @@
 function res = max_cost_of_confidence_set(model, nominal_controller, const, N)
 
+Assert.isTrue(~isnan(nominal_controller.K)); %otherwise controller doesn't exist
+
 %sample some systems
 costs = zeros(N,1);
 D0 = model.D0;

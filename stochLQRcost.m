@@ -1,5 +1,7 @@
 function res = stochLQRcost(model,controller)
 
+Assert.isTrue(~isnan(controller.K)); %otherwise controller doesn't exist
+
 A = model.A;
 B = model.B;
 Q = model.Qcl'*model.Qcl;

@@ -17,7 +17,7 @@ classdef controller_structure
         end
         function con = get_nominal_controller(obj, model_app, system_real, Tf)
             % designed using initial uncertainty
-
+            Assert.isTrue(Tf>0); %otherwise cost isn't meaningful
             tau = sdpvar(1);
             Qcl = model_app.Qcl;
             Rcl = model_app.Rcl;

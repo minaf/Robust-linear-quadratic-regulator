@@ -20,6 +20,8 @@ classdef system_ss
             Nu = size(obj.B,2);
         end
         function cost = calculate_cost(Ksim, model, Tf)
+            Assert.isTrue(~isnan(Ksim)); %otherwise controller doesn't exist
+            Assert.isTrue(Tf>0); %otherwise cost isn't meaningful
             A = model.A;
             B = model.B;
             [Nx, Nu] = get_state_size(model);
