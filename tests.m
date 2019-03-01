@@ -51,6 +51,18 @@ controller_dean = controller_dean_s.K;
 %check if the controller is stabilizing the true system
 assert(spectralRadius(A+B*controller_dean) < 1)
 
+%% Test 6
+%Check sls framework sls_cl_lqr_sdp
+D0 = inv_pend_model.D0;
+M = inv(D0)/const;
+ea = sqrt(max(eig(M(1:Nx,1:Nx))));
+eb = sqrt(max(eig(M(Nx+1:end,Nx+1:end))));
+
+controller_sls = sls_cl_lqr_sdp(inv_pend_model, ea, eb, 0.2);
+%check if the controller is stabilizing the true system
+assert(spectralRadius(A+B*controller_sls.K) < 1)
+
+
 
 
 
