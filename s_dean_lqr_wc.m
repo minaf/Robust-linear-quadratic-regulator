@@ -30,7 +30,7 @@ while (abs(gsc-gsd) > 0.001) && (gs_iter <= max_gs_iters)
     fc = res_sls_c.obj;
     
 % Compute at d 
-    ops_sls.gamma = gsd;
+    gamma = gsd;
     res_sls_d = sls_cl_lqr_sdp(model, ea, eb, gamma);
     fd = res_sls_d.obj;   
     
@@ -100,7 +100,7 @@ else
 end
 
 
-fprintf('Feasible: %d\n',rbst_wc_feas)
+%fprintf('Feasible: %d\n',rbst_wc_feas)
 
 
 %%
@@ -109,6 +109,7 @@ res.K = K_sls;
 res.feasibility = rbst_wc_feas;
 res.time = comptime_wc;
 res.gs_iters = gs_iter-1;
+
 
 res.res_sls_c = res_sls_c;
 res.res_sls_d = res_sls_d;

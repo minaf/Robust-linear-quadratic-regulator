@@ -37,7 +37,21 @@ assert(controller_nominal.cost_old > controller_nominal.cost_new)
 assert(max_cost_of_confidence_set(inv_pend_model, controller_nominal, const, 1000) < controller_nominal.cost_old)
 
 %% Test 5
-% dual controller
+% Check function s_dean_lqr_wc which calculates new controller from Dean
+% paper
+%initial uncertainty
+D0 = inv_pend_model.D0;
+%calculating spectral norms
+M = inv(D0)/const;
+ea = sqrt(max(eig(M(1:Nx,1:Nx))));
+eb = sqrt(max(eig(M(Nx+1:end,Nx+1:end))));
+controller_dean_s = s_dean_lqr_wc(inv_pend_model, ea, eb);
+controller_dean = controller_dean_s.K;
+ 
+%check if the controller is stabilizing the true system
+assert(spectralRadius(A+B*controller_dean) < 1)
+
+
 
 
 

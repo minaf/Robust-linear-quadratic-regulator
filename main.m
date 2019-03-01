@@ -12,7 +12,7 @@ B = [1 0;
 [Nx, Nu] = size(B);
 %define measure matrices
 Q = eye(3);
-R = diag([1 10]);
+R = diag([1 1]);
 
 %calculate cholesky factors (Q = Qcl'*Qcl)
 Qcl = chol(Q);
@@ -24,8 +24,8 @@ sigma_w = 0.5;
 %define an instance: inverted pendulum
 inv_pend = system_ss(A, B, Qcl, Rcl, sigma_w);
 
-N = 100; % number of experiments
-Ts = 5; %number of rollouts
+N = 500; % number of experiments
+Ts = 6; %number of rollouts
 
 %approximate the system
 inv_pend_model = get_model(inv_pend, N, Ts);
